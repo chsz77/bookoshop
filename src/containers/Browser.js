@@ -25,7 +25,11 @@ class Browser extends Component {
   }
   
   fetchBooks = () => {
-    window.scrollTo(0, 0)
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
     let keyword = queryString.parse(this.props.location.search).keyword || ""
     let type = queryString.parse(this.props.location.search).type || "created_at"
     this.setState({sortActive: type, genActive: keyword})

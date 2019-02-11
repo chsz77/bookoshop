@@ -9,7 +9,6 @@ import Show from "./containers/Show.js"
 import Header from "./containers/Header.js"
 import Footer from "./containers/Footer.js"
 import Authentication from "./containers/Authentication.js"
-import Carousel from "./components/Carousel.js"
 import jwtDecode from "jwt-decode"
 import {setTokenHeader} from "./services"
 import {StripeProvider} from 'react-stripe-elements';
@@ -47,7 +46,6 @@ class App extends Component{
             <Route component={props => (<Header currentUser={this.state.currentUser} stateUp={this.stateUp.bind(this)}{...props}/>)}/>
             <Switch>
               <Route exact path='/' render={() => (<Redirect to="/books"/>)}/>
-              <Route exact path='/carousel' render={() => (<Carousel/>)}/>
               <Route exact path='/books' render={props => (<Index {...props}/>)}/>
               <Route exact path='/books/browse' render={props => (<Browser {...props}/>)}/>
               <Route exact path='/books/new' render={AddBook}/>

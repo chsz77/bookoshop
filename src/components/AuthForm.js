@@ -20,8 +20,11 @@ class AuthForm extends Component{
   
   componentDidMount(){
     if(this.props.signup && this.props.currentUser && this.props.currentUser.user_id){
+      
       this.props.history.push("/books")
     }
+    if(this.props.signup){
+      window.scrollTo(0,0)}
   }
   
   handleSubmit = (e) =>{
