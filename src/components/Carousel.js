@@ -9,7 +9,7 @@ const items = [
     src: 'https://images.unsplash.com/photo-1519682337058-a94d519337bc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80',
   },
   {
-    src: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2018/01/11/14/book-shelves-trend.jpg"
+    src: "https://images.unsplash.com/photo-1472068996216-8c972a0af9bd?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80"
   },
   {
     src: "https://images.unsplash.com/photo-1490633874781-1c63cc424610?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80"
