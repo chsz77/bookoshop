@@ -10,6 +10,8 @@ import Book from '../components/Book'
 import Waypoint from 'react-waypoint'
 import Spinner from '../components/Spinner'
 import { Link } from "react-router-dom";
+import Loader from "./Loader"
+
 
 
 class Browser extends Component {
@@ -43,7 +45,7 @@ class Browser extends Component {
         let books = res.data.data
         this.setState({books, loading:false, offset: 0, spinner: false})
       })
-      .catch(()=>this.setState({spinner: false}))
+      .catch(()=>this.setState({spinner: false, loading: false}))
   }
   
   fetchMoreBooks = () => {
@@ -113,13 +115,15 @@ class Browser extends Component {
     ))
     
     return (
+      <div>
+        <Loader {...this.props} loading={this.state.loading}/>
       <Container>
         <div className="gen-waypoint">
-          <Waypoint onLeave={() => this.setState({catFixed: true})} onEnter={() => this.setState({catFixed: false})}/>
+          <Waypoint onLeave={() => this.setState({genFixed: true})} onEnter={() => this.setState({genFixed: false})}/>
         </div>
         <Row>
           <Col md="2">
-            <ul className={this.state.catFixed ? "genres-fixed" : "genres"}>
+            <ul className={this.state.genFixed ? "genres-fixed" : "genres"}>
               <h6>Genre</h6>
               <li className="genres-list"><Link to="/books/browse">All</Link></li>
               {genres}
@@ -144,7 +148,11 @@ class Browser extends Component {
             <Waypoint onEnter={()=>this.fetchMoreBooks()}/>
           </div>
         </Row>
+        
       </Container>
+        <div style={{height: "200px"}}>
+        </div>
+      </div>
     )
   }
 }

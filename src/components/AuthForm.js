@@ -27,6 +27,13 @@ class AuthForm extends Component{
       window.scrollTo(0,0)}
   }
   
+  componentDidUpdate(){
+    if(this.props.signup && this.props.currentUser && this.props.currentUser.user_id){
+      
+      this.props.history.push("/books")
+    }
+  }
+  
   handleSubmit = (e) =>{
     e.preventDefault()
     if(!this.state.spinner){

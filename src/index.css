@@ -586,17 +586,27 @@ button{
     margin-top: 20px;
     background: beige;
     text-align: right;
-    padding: 50px 70px 30px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 30px;
 }
 
-.footer div div{
-  font-size: 14px;
+.footer .contact{
+  display: flex;
+  font-weight: bold;
 }
+
+.footer .contact div{
+  padding: 0 10px;
+}
+
+/*.footer div div{*/
+/*  font-size: 14px;*/
+/*}*/
 
 .footer .icons {
-  text-align: center;
-  margin-top: 40px;
-  font-size: 2rem;
+  font-size: 1.7rem;
 }
 
 .footer .icons i{
@@ -604,10 +614,8 @@ button{
 }
 
 .footer .sign {
-  position: absolute;
-  margin-top: 60px;
-  right: 70px;
-  font-size: 14px
+  font-size: 14px;
+  float: left;
 }
 
 .checkout-form {
