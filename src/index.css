@@ -584,12 +584,13 @@ button{
 
 .footer{
     margin-top: 20px;
-    background: beige;
+    background: #fafafa;
     text-align: right;
     display: flex;
     justify-content: space-around;
     align-items: center;
     padding: 30px;
+    color: #aeaeae;
 }
 
 .footer .contact{
