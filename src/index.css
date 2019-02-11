@@ -156,7 +156,7 @@ button{
   
 }
 .searchbar{
-  max-width: 900px;
+  max-width: 830px;
   border: none!important;
   flex-grow: 0.7;
   
@@ -194,7 +194,7 @@ button{
 
 .suggestion {
   position: absolute;
-  width: 839px;
+  width: 830px;
   max-height: 250px;
   overflow: auto;
   padding: 0;

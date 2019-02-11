@@ -95,7 +95,10 @@ class Browser extends Component {
       className={sort.type === this.state.sortActive ? "sort-active" : ""} 
       name="type" key={i}>{sort.title}</li>
     ))  
-    let genreData = ["Sci-Fi", "Comedy", "Fantasy", "Action", "Romance", "Drama"]
+    let genreData = ["Sci-Fi", "Comedy", "Fantasy", "Adventure", "War", "Action", "Romance", "Drama", "Mystery", "Horror", "Thriller", 
+      
+    ]
+    
     let genres = genreData.map( (genre, i) => (
       <li value={genre} className={`${genre === this.state.genActive ? "sort-active " : ""}genres-list`}  
       
@@ -132,6 +135,8 @@ class Browser extends Component {
             </div>
             <hr/>
             <div className="browser">
+              {!this.state.loading && !this.state.spinner && this.state.books.length === 0 && 
+              <h6 className="text-center mx-auto py-4">Sorry, we dont have that books</h6>}
               {books}
             </div>
           </Col>
