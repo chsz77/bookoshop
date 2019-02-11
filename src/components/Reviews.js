@@ -51,22 +51,6 @@ class Reviews extends Component {
     }
   }
   
-  loadMoreReviews = () => {
-    if(this.state.reviews.length > 0){
-      let book_id = this.props.match.params.book_id
-      let offset = this.state.offset + this.state.limit
-      let limit = this.state.limit
-      axios.get(`${API}/books/${book_id}/review?limit=${limit}&offset=${offset}`)
-        .then(res => {
-          let reviews = res.data.data
-          if(reviews.length === 0){
-            this.refs.more.style.display = 'none'
-          }
-          this.setState({reviews: [...this.state.reviews, ...reviews], offset})
-        })
-    }
-  }
-  
   loadReviews(limit, offset){
     let book_id = this.props.match.params.book_id
     axios.get(`${API}/books/${book_id}/reviews?limit=${limit}&offset=${offset}`)
@@ -77,6 +61,22 @@ class Reviews extends Component {
         }
         this.setState({reviews})
       })
+  }
+  
+  loadMoreReviews = () => {
+    if(this.state.reviews.length > 0){
+      let book_id = this.props.match.params.book_id
+      let offset = this.state.offset + this.state.limit
+      let limit = this.state.limit
+      axios.get(`${API}/books/${book_id}/reviews?limit=${limit}&offset=${offset}`)
+        .then(res => {
+          let reviews = res.data.data
+          if(reviews.length === 0){
+            this.refs.more.style.display = 'none'
+          }
+          this.setState({reviews: [...this.state.reviews, ...reviews], offset})
+        })
+    }
   }
   
   render(){
