@@ -52,18 +52,19 @@ class Reviews extends Component {
   }
   
   loadMoreReviews = () => {
-    let book_id = this.props.match.params.book_id
-    let offset = this.state.offset + this.state.limit
-    let limit = this.state.limit
-    axios.get(`${API}/reviews/${book_id}/${limit}/${offset}`)
-      .then(res => {
-        let reviews = res.data.data
-        if(reviews.length === 0){
-          this.refs.more.style.display = 'none'
-        }
-        this.setState({reviews: [...this.state.reviews, ...reviews]})
-      })
-    this.setState({offset})
+    if(this.state.reviews.length > 0){
+      let book_id = this.props.match.params.book_id
+      let offset = this.state.offset + this.state.limit
+      let limit = this.state.limit
+      axios.get(`${API}/reviews/${book_id}/${limit}/${offset}`)
+        .then(res => {
+          let reviews = res.data.data
+          if(reviews.length === 0){
+            this.refs.more.style.display = 'none'
+          }
+          this.setState({reviews: [...this.state.reviews, ...reviews], offset})
+        })
+    }
   }
   
   loadReviews(limit, offset){
