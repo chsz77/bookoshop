@@ -1,1 +1,1 @@
-export const API = "https://bookos.herokuapp.com/api/books"
+export const API = "https://bookos.herokuapp.com"
