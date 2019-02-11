@@ -14,6 +14,10 @@ button{
   box-shadow: none!important
 }
 
+.navbar-brand {
+  color: white!important;
+}
+
 .loader{
   position: fixed;
   top: 0;
@@ -189,9 +193,8 @@ button{
 }
 
 .suggestion {
-  /*background: blue;*/
   position: absolute;
-  width: 830px;
+  width: 839px;
   max-height: 250px;
   overflow: auto;
   padding: 0;
@@ -619,6 +622,8 @@ button{
 
 .checkout-form textarea{
   font-size: 0.9rem!important;
+  border-radius: 0;
+  box-shadow: none!important
 }
 
 .checkout-wait span{
