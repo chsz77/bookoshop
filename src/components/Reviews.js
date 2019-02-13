@@ -87,6 +87,10 @@ class Reviews extends Component {
     }
   }
   
+  loadNewReview = (newReview) => {
+    this.setState({reviews: [newReview, ...this.state.reviews]})
+  }
+  
   toggleForm = e => {
      if(this.state.reviewed && !this.state.showForm){
        alert("UNDER CONSTRUCTION")
@@ -112,7 +116,7 @@ class Reviews extends Component {
         }
         {this.state.showForm &&
           <ReviewForm book_id={this.props.book_id} 
-            loadReviews={this.loadReviews.bind(this)}
+            loadNewReview={this.loadNewReview.bind(this)}
             userId={this.props.currentUser.user_id} 
             toggle={this.toggleForm.bind(this)}
             fetchBook={this.props.fetchBook}
@@ -122,11 +126,13 @@ class Reviews extends Component {
           <div>
           {review}
           </div>
-          <div className='text-center pt-4'ref='more'>
-          {this.state.reviews.length !== 0 && (<Waypoint onEnter={this.loadMoreReviews.bind(this)}/>)}
-            <h6>Loading...</h6>
-          </div>
         </ListGroup>
+        {this.state.reviews.length !== 0 && (
+        <div className='text-center pt-4'ref='more'>      
+          <Waypoint onEnter={this.loadMoreReviews.bind(this)}/>
+          <h6>Loading...</h6>
+        </div>
+        )}
       </div>
       
     )

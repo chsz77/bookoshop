@@ -22,7 +22,7 @@ class ReviewForm extends Component{
             axios.post(`${API}/books/${book_id}/reviews/${user_id}`, this.state)
                 .then(res => {
                     if(res.data.status === "success"){
-                        this.props.loadReviews()
+                        this.props.loadNewReview(res.data.data)
                         this.props.fetchBook()
                         this.setState({spinner: false})
                         this.closeFrom(e)

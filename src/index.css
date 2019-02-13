@@ -728,10 +728,12 @@ button{
 
 .disc-item{
   white-space: pre-line;
+  padding-right: 30px;
 }
 
 .discussion-form{
   padding: 20px;
+  padding-right: 30px;
 }
 
 .discussion-form textarea{

@@ -7,7 +7,7 @@ import {
 // import Waypoint from 'react-waypoint';
 import Spinner from './Spinner'
 import Moment from "react-moment";
-
+import Waypoint from 'react-waypoint';
 
 class Discussions extends Component {
   state = {discussions:[], limit:5, offset:0, form:{text: "", minRows:2, maxRows: 10, rows:2}, spinner: false}
@@ -16,12 +16,21 @@ class Discussions extends Component {
     this.loadDiscussions(this.state.limit, this.state.offset)
   }
   
-  // loadMoreDiscussions = () => {
-  //   let offset = this.state.offset + this.state.limit
-  //   let limit = this.state.limit
-  //   this.loadDiscussions(limit, offset)
-  //   this.setState({offset})
-  // }
+  loadMoreDiscussions = () => {
+    if(this.state.discussions.length > 0){
+      let book_id = this.props.match.params.book_id
+      let offset = this.state.offset + this.state.limit
+      let limit = this.state.limit
+      axios.get(`${API}/discussions/${book_id}?limit=${limit}&offset=${offset}`)
+        .then(res => {
+          let discussions = res.data.data
+          if(discussions.length === 0){
+            this.refs.more.style.display = 'none'
+          }
+          this.setState({discussions: [...this.state.discussions, ...discussions], offset})
+        })
+    }
+  }
   
   componentDidUpdate(prevProps, prevState){
       if(this.props.match){
@@ -56,11 +65,15 @@ class Discussions extends Component {
       axios.post(`${API}/discussions/${book_id}/${user_id}`, this.state.form)
         .then(res => {
           if(res.data.status === "success"){
+            let newDisc = res.data.data
+            console.log(newDisc)
+            this.setState({discussions: [newDisc,...this.state.discussions]})
             //need more elegant
-            this.loadDiscussions(5, 0)
+            // this.loadDiscussions(5, 0)
             this.setState({form: {text: "", rows: 2}, spinner: false})
           }
         })
+        .catch(()=> this.setState({spinner: false}))
     }
   }
   
@@ -138,6 +151,12 @@ class Discussions extends Component {
         <ListGroup flush>
           {discussions}
         </ListGroup>
+        {this.state.discussions.length !== 0 && (
+        <div className='text-center pt-4'ref='more'>
+          <Waypoint onEnter={this.loadMoreDiscussions.bind(this)}/>
+            <h6>Loading...</h6>
+        </div>
+        )}
       </div>  
     )
   }
