@@ -766,7 +766,7 @@ button{
 
 .discussion-form .spinner{
   margin-top: -57px;
-  right: 90px;
+  right: 100px;
 }
 
 .quest-delete{
@@ -775,7 +775,7 @@ button{
 
 .quest-delete .spinner{
   margin-top: -45px;
-  right: 15px;
+  right: 20px;
 }
 
 @keyframes slide-top {
