@@ -45,12 +45,13 @@ class Discussions extends Component {
   
   handleSubmit = e => {
     e.preventDefault()
-    if(this.state.form.text.length > 0){
-      let book_id = this.props.match.params.book_id
-      let user_id = this.props.currentUser.user_id
-      if(!user_id){
-        this.props.history.push("/signup")
-      }
+    let book_id = this.props.match.params.book_id
+    let user_id = this.props.currentUser.user_id
+    if(!user_id){
+      this.props.history.push("/signup")
+    }
+    else if(this.state.form.text.length > 0){
+      
       this.setState({spinner: true})
       axios.post(`${API}/discussions/${book_id}/${user_id}`, this.state.form)
         .then(res => {
