@@ -12,7 +12,7 @@ const Book = (props) => {
       <Link to={`/books/${book_id}`}>
       <Card className='h-100'>
         <div
-          title={tooltip === "tooltip" && title}
+          title={tooltip === "tooltip" ? title : ""}
           style={{background: `url(${image_url}) no-repeat center`,  backgroundSize: "cover", height: '100%', width: '100%'} }/>
           <div className="book-desc">
             <p><strong>{title}</strong></p>

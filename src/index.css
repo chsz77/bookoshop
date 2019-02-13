@@ -525,6 +525,20 @@ button{
   background: #999; 
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+  visibility: hidden;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #999; 
+}
+
+
 .showcase {
   opacity: 0;
   animation: 7s slidefade 0s forwards;
@@ -710,6 +724,56 @@ button{
 
 .revform-closed{
   animation: slide-bottom 0.5s forwards;
+}
+
+.disc-item{
+  white-space: pre-line;
+}
+
+.discussion-form{
+  padding: 20px;
+}
+
+.discussion-form textarea{
+  border: none;
+  border-bottom: solid 1px black!important;
+  border-radius: 0;
+  font-size: 0.9rem;
+  padding-left: 10px;
+  width: 100%;
+  overflow: auto;
+	height: auto;
+  resize: none;
+  box-shadow: none!important;
+  
+}
+
+
+.discussion-form div{
+  text-align: right;
+  margin-top: 10px
+}
+
+.discussion-form button{
+  background: none;
+  border: solid 1px black!important;
+  margin-right: 5px;
+  font-size: 0.9rem;
+  cursor: pointer
+}
+
+.discussion-form .spinner{
+  margin-top: -57px;
+  right: 90px;
+}
+
+.quest-delete{
+  float: right;
+}
+
+.quest-delete .spinner{
+  margin-top: -45px;
+  right: 15px;
 }
 
 @keyframes slide-top {

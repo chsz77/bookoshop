@@ -15,19 +15,21 @@ class ReviewForm extends Component{
     }
     
     handleSubmit = e => {
-        this.setState({spinner: true})
-        let book_id = this.props.book_id
-        let user_id = this.props.userId
-        axios.post(`${API}/books/${book_id}/reviews/${user_id}`, this.state)
-            .then(res => {
-                if(res.data.status === "success"){
-                    this.props.loadReviews()
-                    this.props.fetchBook()
-                    this.setState({spinner: false})
-                    this.closeFrom(e)
-                }
-            })
-            .catch(() => this.setState({spinner: false}))
+        if(this.state.text.length > 0){
+            this.setState({spinner: true})
+            let book_id = this.props.book_id
+            let user_id = this.props.userId
+            axios.post(`${API}/books/${book_id}/reviews/${user_id}`, this.state)
+                .then(res => {
+                    if(res.data.status === "success"){
+                        this.props.loadReviews()
+                        this.props.fetchBook()
+                        this.setState({spinner: false})
+                        this.closeFrom(e)
+                    }
+                })
+                .catch(() => this.setState({spinner: false}))
+        }
     }
     
     render(){
@@ -49,7 +51,7 @@ class ReviewForm extends Component{
                 <div>    
                     <Input value={this.state.text} 
                         onChange={e => this.setState({text: e.target.value})}
-                        type="textarea" rows="20" placeholder="How is the book?"/>
+                        type="textarea" rows="13" placeholder="How is the book?"/>
                 </div>
                 
             </Form>
