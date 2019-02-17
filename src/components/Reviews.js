@@ -35,7 +35,7 @@ class ReviewList extends Component{
 }
 
 class Reviews extends Component {
-  state = {reviews:[], limit:5, offset:0, showForm: false, reviewed: false, userReview:""}
+  state = {reviews:[], loadMore: false, limit:5, offset:0, showForm: false, reviewed: false, userReview:""}
   timeout = 0
   
   componentDidMount(){
@@ -67,22 +67,23 @@ class Reviews extends Component {
         if(reviews.length === 0){
           this.refs.more.style.display = 'none'
         }
-        this.setState({reviews})
+        this.setState({reviews, offset: 0})
       })
   }
   
   loadMoreReviews = () => {
-    if(this.state.reviews.length > 0){
+    if(this.state.reviews.length > 0 && !this.state.loadMore){
+      this.setState({loadMore: true})
       let book_id = this.props.match.params.book_id
       let offset = this.state.offset + this.state.limit
       let limit = this.state.limit
-      axios.get(`${API}/reviews/${book_id}/?limit=${limit}&offset=${offset}`)
+      axios.get(`${API}/reviews/${book_id}?limit=${limit}&offset=${offset}`)
         .then(res => {
           let reviews = res.data.data
           if(reviews.length === 0){
             this.refs.more.style.display = 'none'
           }
-          this.setState({reviews: [...this.state.reviews, ...reviews], offset})
+          this.setState({reviews: [...this.state.reviews, ...reviews], offset, loadMore: false})
         })
     }
   }
