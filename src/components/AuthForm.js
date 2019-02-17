@@ -14,8 +14,11 @@ class AuthForm extends Component{
       password:{
         status: false,
         message: "",
-        confmessage: ""
-      } 
+      },
+      confPassword:{
+        status: false,
+        message: ""
+      }
     }}
   
   componentDidMount(){
@@ -39,10 +42,11 @@ class AuthForm extends Component{
     if(!this.state.spinner){
       let type = "signin"
       if(this.props.signup){
-        let validusername = this.state.validation.username.status
-        let validpassword = this.state.validation.password.status
+        let validUsername = this.state.validation.username.status
+        let validPassword = this.state.validation.password.status
+        let validConfPassword = this.state.validation.confPassword.status
         type = "signup"
-        if(!(validusername && validpassword)){
+        if(!(validUsername && validPassword && validConfPassword)){
           this.setState({spinner: false})
           this.validateUsername()
           this.validatePassword()
@@ -89,7 +93,7 @@ class AuthForm extends Component{
   validatePassword = () => {
     let {password} = this.state
     if(password.length < 6){
-      this.setState({validation:{...this.state.validation, password:{...this.state.validation.password, status: false, message: "short password is not good"}}})
+      this.setState({validation:{...this.state.validation, password:{status: false, message: "short password is not good"}}})
     }
     else {
       this.setState({validation:{...this.state.validation, password: {status: true, message:""}}})
@@ -102,10 +106,10 @@ class AuthForm extends Component{
   validateConfPassword = (call) => {
     let {password, confirmPassword} = this.state
     if(confirmPassword !== password ){
-      this.setState({validation:{...this.state.validation, password:{...this.state.validation.password, status:false, confmessage: "do you remember your password?"}}})
+      this.setState({validation:{...this.state.validation, confPassword:{status:false, message: "please remember your password"}}})
     }
     else {
-      this.setState({validation:{...this.state.validation, password:{status:true, message:"", confmessage: ""}}})
+      this.setState({validation:{...this.state.validation, confPassword:{status:true, message: ""}}})
     }
   }
   
@@ -143,7 +147,7 @@ class AuthForm extends Component{
           placeholder="Confirm Password"
           onChange={e => this.setState({confirmPassword: e.target.value}, () => this.validateConfPassword())}
           />
-          <div className="valid-auth">{this.state.validation.password.confmessage}</div>
+          <div className="valid-auth">{this.state.validation.confPassword.message}</div>
           <br/>
         </div>  
         )}
