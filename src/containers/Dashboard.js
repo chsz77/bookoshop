@@ -14,12 +14,15 @@ class Dashboard extends Component {
     state = {transactions:[], transItems: [], reviews:[], 
         book_id: "", review_id: "", review_form: false,
         books:[],
+        orders: [],
+        adminSection: "orders",
         modal:false, loading: false, activeSection: "Transactions", spinner: false}
     
     componentDidMount(){
         this.fetchTransactions()
         this.fetchReviews()
         this.fetchBooks()
+        this.fetchOrders()
     }
     
     fetchTransactions = () => {
@@ -88,6 +91,15 @@ class Dashboard extends Component {
                 this.setState({books:this.state.books.filter(book => book.book_id !== book_id), book_id: ""})
             })
     }
+    
+    fetchOrders = () => {
+        
+        axios.get(`${API}/users/admin/transactions`)
+            .then(res => {
+                let orders = res.data.data
+                this.setState({orders})
+            })
+    } 
     
     render(){
         const transactions = this.state.transactions.map((trans, i) => (
@@ -229,12 +241,15 @@ class Dashboard extends Component {
             </tr>
         ))            
         
-        let adminSection = this.state.activeSection === "Admin" &&
-            <Col md="10" className="admin-section"> 
-                <h6>Book <span
-                style={{fontSize: "20px" , cursor: "pointer"}}
-                onClick={this.showBookForm}
-                className="float-right">+</span></h6>
+        let bookSection = this.state.adminSection === "books" &&
+            <div>
+                <h6>Book
+                    <span>{" (" + this.state.books.length + ")"}</span>
+                    <span
+                    style={{fontSize: "20px" , cursor: "pointer"}}
+                    onClick={this.showBookForm}
+                    className="float-right">[+]</span>
+                </h6>
                 <hr/>
                 <div>
                 <Table >
@@ -260,6 +275,58 @@ class Dashboard extends Component {
                     </tbody>
                 </Table>
                 </div>
+            </div>
+        
+        
+        let orders = this.state.orders.map((order, i) => (
+            <tr key={i}>
+                <th scope="row">{i+1}</th>
+                <td 
+                    style={{cursor: "pointer", color: "#007bff"}}
+                    onClick={this.fetchTransItems.bind(this, order.pay_id)}>{order.pay_id}</td>
+                <td>Not delivered</td>
+                <td>{order.username}</td>
+                <td>{order.name}</td>
+                <td>{order.phone}</td>
+                <td>{order.email}</td>
+                <td>${order.ship_cost}</td>
+                <td>${order.cart_total}</td>
+                <td>{order.ship_address}</td>
+                <td>{order.created_at}</td>
+            </tr>
+        ))
+        
+        let orderSection = this.state.adminSection === "orders" &&
+            <div>
+                <h6>Orders <span>{"(" + this.state.orders.length + ")"}</span></h6>
+                <hr/>
+                <Table bordered>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Pay ID</th>
+                        <th>Status</th>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Shipping</th>
+                        <th>Total</th>
+                        <th>Address</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {orders}
+                    </tbody>
+                </Table>
+            </div>
+        
+        
+        let adminSection = this.state.activeSection === "Admin" &&
+            <Col md="10" className="admin-section"> 
+                {orderSection}
+                {bookSection}
             </Col>                
         
         
@@ -287,6 +354,18 @@ class Dashboard extends Component {
                             borderRight: "solid 1px lightgrey"}}>
                         <p><strong>Section</strong></p>
                             {sectionsList}
+                            {this.state.activeSection === "Admin" && 
+                            <ul>
+                                <hr/>
+                                <li 
+                                style={{cursor: "pointer", color: "#007bff"}}
+                                onClick={()=>this.setState({adminSection: "orders"})}>Orders</li>
+                                <br/>
+                                <li 
+                                style={{cursor: "pointer", color: "#007bff"}}
+                                onClick={()=>this.setState({adminSection: "books"})}>Books</li>
+                              </ul>
+                            }
                         </ul>
                     </Col>
                         {tranSection}

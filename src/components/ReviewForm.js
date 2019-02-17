@@ -72,8 +72,11 @@ class ReviewForm extends Component{
                         initialRating={this.state.value/10}
                     />
                     <span>
-                    <span style={{fontWeight:"bold", cursor: "pointer", color: "red"}} onClick={this.props.deleteReview}>Delete</span>
-                    {" | "}<span style={{fontWeight:"bold", cursor: "pointer"}}
+                    {this.props.reviewEdit &&
+                    <span style={{fontWeight:"bold", cursor: "pointer", color: "red"}} 
+                    onClick={this.props.deleteReview}>Delete | </span>
+                    }
+                    <span style={{fontWeight:"bold", cursor: "pointer"}}
                         onClick={this.handleSubmit}>Submit</span>
                     </span>    
                 </div>    

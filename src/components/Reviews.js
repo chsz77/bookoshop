@@ -52,7 +52,7 @@ class Reviews extends Component {
       }
     }
     const userReview = this.state.reviews.filter(review => review.user_id === this.props.currentUser.user_id)[0]
-    if(!prevState.reviewed && userReview){
+    if(!prevState.reviewed && userReview && !this.state.showForm){
       this.setState({reviewed: true, userReview: userReview.review_id})
     } else if (prevState.reviewed && !userReview) {
       this.setState({reviewed: false})
