@@ -5,16 +5,21 @@ import axios from 'axios';
 import {API} from '../config'
 import {Link} from 'react-router-dom'
 import ReviewForm from '../components/ReviewForm'
+import BookForm from '../components/BookForm'
+import Spinner from '../components/Spinner'
+
 
 
 class Dashboard extends Component {
     state = {transactions:[], transItems: [], reviews:[], 
         book_id: "", review_id: "", review_form: false,
-        modal:false, loading: false, activeSection: "Transactions"}
+        books:[],
+        modal:false, loading: false, activeSection: "Transactions", spinner: false}
     
     componentDidMount(){
         this.fetchTransactions()
         this.fetchReviews()
+        this.fetchBooks()
     }
     
     fetchTransactions = () => {
@@ -54,6 +59,33 @@ class Dashboard extends Component {
         axios.delete(`${API}/reviews/${review_id}`)
             .then(res => {
                 this.setState({reviews:this.state.reviews.filter(review => review.review_id !== review_id)})
+            })
+    }
+    
+    fetchBooks = (sort="created_at") => {
+        this.setState({spinner: true})
+        axios.get(`${API}/books?type=${sort}`)
+          .then(res => {
+            let books = res.data.data
+            if(this.state.books.length > 0 && this.state.books[0].book_id === books[0].book_id){
+                books = books.reverse()
+                console.log("triggered")
+            }
+            this.setState({books, spinner: false})
+          })
+    }
+    
+    showBookForm = () => {
+        this.setState({bookForm: !this.state.bookForm})
+        if(!this.state.bookForm){
+            this.setState({book_id: ""})
+        }
+    }
+    
+    deleteBook = (book_id) => {
+        axios.delete(`${API}/books/${book_id}`)
+            .then(res => {
+                this.setState({books:this.state.books.filter(book => book.book_id !== book_id), book_id: ""})
             })
     }
     
@@ -129,17 +161,18 @@ class Dashboard extends Component {
                 <td><Link to={`/books/${review.book_id}`}>{review.title}</Link></td>
                 <td>{review.created_at}</td>
                 <td>
-                <span 
-                style={{cursor: "pointer", color: "red"}}
-                onClick={this.deleteReview.bind(this, review.review_id)}>
-                Delete
-                </span>
-                <hr/>
-                <span  
-                style={{cursor: "pointer", color: "#007bff"}}
-                onClick={()=>this.setState({book_id: review.book_id, 
-                showForm: true,
-                review_id: review.review_id})}>Edit</span></td>
+                    <span 
+                    style={{cursor: "pointer", color: "red"}}
+                    onClick={this.deleteReview.bind(this, review.review_id)}>
+                    Delete
+                    </span>
+                    <hr/>
+                    <span  
+                    style={{cursor: "pointer", color: "#007bff"}}
+                    onClick={()=>this.setState({book_id: review.book_id, 
+                    showForm: true,
+                    review_id: review.review_id})}>Edit</span>
+                </td>
             </tr>    
         ))
         
@@ -165,6 +198,71 @@ class Dashboard extends Component {
                             </Table>
                         </Col>
         
+        
+        const books = this.state.books.map((book, i) => (
+            <tr key={i}>
+                <th scope="row">{i+1}</th>
+                <td><img style={{height: "100px", width: "75px"}}src={book.image_url} alt={book.title}/></td>
+                <td><Link to={`/books/${book.book_id}`}>{book.title}</Link></td>
+                <td>{"$" + book.price}</td>
+                <td>{book.stock}</td>
+                <td>{book.sold}</td>
+                <td>{book.views}</td>
+                <td>{(Number(book.rating)/10).toFixed(2)}</td>
+                <td>{book.author}</td>
+                <td>{book.genre.replace(/[|]/g, ", ")}</td>
+                <td>{book.published_at}</td>
+                <td>
+                    <span
+                    onClick={this.deleteBook.bind(this, book.book_id)}
+                    style={{cursor: "pointer", color: "red"}}>
+                    Delete
+                    </span>
+                    <hr/>
+                    <span
+                    onClick={()=>this.setState({book_id: book.book_id, 
+                    bookForm: true})}
+                    style={{cursor: "pointer", color: "#007bff"}}
+                    >Edit</span>
+                </td>
+                <td>{book.created_at}</td>
+            </tr>
+        ))            
+        
+        let adminSection = this.state.activeSection === "Admin" &&
+            <Col md="10" className="admin-section"> 
+                <h6>Book <span
+                style={{fontSize: "20px" , cursor: "pointer"}}
+                onClick={this.showBookForm}
+                className="float-right">+</span></h6>
+                <hr/>
+                <div>
+                <Table >
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Cover</th>
+                        <th onClick={()=>this.fetchBooks("title")} style={{cursor: "pointer", color: "#007bff"}}>Title</th>
+                        <th onClick={()=>this.fetchBooks("price")} style={{cursor: "pointer", color: "#007bff"}}>Price</th>
+                        <th onClick={()=>this.fetchBooks("price")} style={{cursor: "pointer", color: "#007bff"}}>Stock</th>
+                        <th onClick={()=>this.fetchBooks("sold")} style={{cursor: "pointer", color: "#007bff"}}>Sold</th>
+                        <th onClick={()=>this.fetchBooks("views")} style={{cursor: "pointer", color: "#007bff"}}>Views</th>
+                        <th onClick={()=>this.fetchBooks("rating")} style={{cursor: "pointer", color: "#007bff"}}>Rating</th>
+                        <th onClick={()=>this.fetchBooks("author")}>Author</th>
+                        <th onClick={()=>this.fetchBooks("genre")} style={{cursor: "pointer", color: "#007bff"}}>Genre</th>
+                        <th>Published</th>
+                        <th>Actions</th>
+                        <th onClick={()=>this.fetchBooks("created_at")} style={{cursor: "pointer", color: "#007bff"}}>Added</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {books}
+                    </tbody>
+                </Table>
+                </div>
+            </Col>                
+        
+        
         let sections = ["Transactions", "Reviews", "Profile", "Admin"]
         
         let sectionsList = sections.map(section => (
@@ -179,8 +277,10 @@ class Dashboard extends Component {
         }
         
         return (
-            <Container style={{fontSize: "0.8rem"}}>
+            <Container className="dashboard">
                 <Row>
+                    {this.state.spinner &&
+                    <Spinner />}
                     <Col md="2">
                         <ul style={{fontSize: "0.9rem", marginTop: "30px", 
                             paddingRight: "30px",
@@ -191,6 +291,7 @@ class Dashboard extends Component {
                     </Col>
                         {tranSection}
                         {revSection}
+                        {adminSection}
                 </Row>
                 {transItemsList}
                 
@@ -201,6 +302,14 @@ class Dashboard extends Component {
                     book_id={this.state.book_id}
                     fetchReviews={this.fetchReviews.bind(this)}
                     />
+                }
+                {this.state.bookForm && 
+                <div className="book-form-parent">
+                <span onClick={this.showBookForm}>&times;</span>
+                <BookForm
+                    book_id={this.state.book_id}
+                    toggle={this.showBookForm.bind(this)} fetchBooks={this.fetchBooks.bind(this)}/>
+                </div>
                 }
             </Container>
         )

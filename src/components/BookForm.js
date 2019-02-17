@@ -2,46 +2,70 @@ import React, { Component } from 'react';
 import {
   Form, FormGroup, Label, Input, 
   Button,
-  Col,
-  Container } from 'reactstrap';
+  Col} from 'reactstrap';
 import axios from 'axios';
 import {API} from '../config'
 
 
 class BookForm extends Component {
-  state = {title:"", isbn:"", author:"", stock: "", price: "", 
-    published_at:"", synopsis: "", genre: "", image_url:""}
+  state = {form:{title:"", isbn:"", author:"", stock: "", price: "", 
+    published_at:"", synopsis: "", genre: "", image_url:""}, edit: false, success: false}
+  
+  componentDidMount(){
+    if(this.props.book_id){
+      this.setState({edit: true})
+      axios.get(`${API}/books/${this.props.book_id}`)
+      .then(res => {
+        let form = res.data.data
+        this.setState({form})
+      })
+    }
+  }
   
   handleChange = (e) => {
-    this.setState({[e.target.name]: e.target.value})
+    this.setState({form:{...this.state.form, [e.target.name]: e.target.value}})
   }
   
   handleSubmit = (e) => {
     e.preventDefault()
-    axios.post(`${API}/books`, this.state)
+    let method = "post"
+    let book_id = this.props.book_id
+    if(this.state.edit){
+      method = "put"
+      book_id = "/" + this.props.book_id
+    }
+    
+    axios({
+      method: method,
+      url: `${API}/books${book_id}`,
+      data: this.state.form})
       .then(res => {
-        if(res.data.status === "success"){
-          this.setState({success: true, title:"", isbn:"", author:"", 
-            stock: "", price: "", published_at:"", synopsis: "", 
-            genre: "", image_url:""})
-          setTimeout(()=>this.setState({success: false}), 3000)
+          if(res.data.status === "success"){
+            this.setState({success: true})
+            if(!this.state.edit){
+            this.setState({form:{title:"", isbn:"", author:"", 
+              stock: "", price: "", published_at:"", synopsis: "", 
+              genre: "", image_url:""}})
+            }
+              
+            this.props.fetchBooks()  
+            setTimeout(()=>this.setState({success: false}, this.props.toggle), 1000)
         }
       })
   }
   
   render(){
-    let {title, isbn, author, stock, price, published_at, synopsis, genre, image_url, success} = this.state
+    let {title, isbn, author, stock, price, published_at, synopsis, genre, image_url} = this.state.form
     
     return(
-      <Container className="py-4">
-        <Col md={{size:"8", offset: "1"}}>
-          <h3>Add a New Book</h3>
-          {success && 
-            <div className="alert alert-success" role="alert">
-              Added new book
+        <Col md={{size:"8"}} className="book-form">
+          <h6>Add a New Book</h6>
+          {this.state.success && 
+            <div className="alert alert-success text-center" role="alert">
+              Success
             </div>}
           <hr/>
-          <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={this.handleSubmit} >
             <FormGroup>
               <div className="form-row">
                 <div className="col-md-7 mb-2">
@@ -49,13 +73,13 @@ class BookForm extends Component {
                   <Input onChange={this.handleChange} type="text" 
                     name="title" 
                     value={title}
-                    placeholder="Collapsing Empire, The Lord of The Ring..." />
+                    />
                 </div>
                 <div className="col-md-5">
                   <Label for="author">Author</Label>
                   <Input onChange={this.handleChange} type="text" name="author" 
                     value={author}
-                    placeholder="John Scalzi, JRR Tolkien..." />
+                   />
                 </div>
               </div>
             </FormGroup>
@@ -81,7 +105,7 @@ class BookForm extends Component {
                     </div>
                     <Input onChange={this.handleChange} type="number" name="price" 
                       value={price}
-                      placeholder="200.00" className="form-control"/>
+                      placeholder="20.00" className="form-control"/>
                   </div>
                 </div>
               </div>
@@ -118,7 +142,6 @@ class BookForm extends Component {
             <Button>Submit</Button>
           </Form>
         </Col>
-      </Container>
     )
   }
 }

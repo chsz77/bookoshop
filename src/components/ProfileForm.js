@@ -3,7 +3,7 @@ import {FormGroup, Input, Label} from "reactstrap"
 
 
 class ProfileForm extends Component{
-    state = {name: "", phone: "", email: "", address:""}
+    state = {form:{name: "", phone: "", email: "", address:""}}
     
     componentDidMount(){
         if(this.props.profile.name){
@@ -18,7 +18,7 @@ class ProfileForm extends Component{
     }
     
     handleChange = (e) => {
-        this.setState({[e.target.name]: e.target.value}, ()=>this.props.stateUp(this.state))
+        this.setState({form:{...this.state.form, [e.target.name]: e.target.value}}, ()=>this.props.stateUp(this.state))
     }
     
     render(){
