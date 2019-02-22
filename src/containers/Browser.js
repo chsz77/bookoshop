@@ -23,7 +23,9 @@ class Browser extends Component {
     limit: 20, end: false, genFixed: false}
   
   componentDidMount(){
-      this.fetchBooks()
+      if(this.state.books.length < 1){
+        this.fetchBooks()
+      }
   }
   
   fetchBooks = () => {
@@ -43,7 +45,7 @@ class Browser extends Component {
     axios.get(`${API}/books?limit=20&offset=0${keyword}${type}`)
       .then(res => {
         let books = res.data.data
-        this.setState({books, loading:false, offset: 0, spinner: false})
+        this.setState({books, loading:false, offset: 0, spinner: false, end: false})
       })
       .catch(()=>this.setState({spinner: false, loading: false}))
   }
@@ -78,6 +80,15 @@ class Browser extends Component {
          this.setState({spinner:true})
          this.fetchBooks()
       }
+  }
+  
+  componentWillUnmount() {
+    localStorage.setItem('browserState', JSON.stringify(this.state))
+  }
+  
+  componentWillMount() {
+    const rehydrate = JSON.parse(localStorage.getItem('browserState'))
+      this.setState(rehydrate)
   }
   
   handleLink = e => {
@@ -118,6 +129,7 @@ class Browser extends Component {
       <div>
         <Loader {...this.props} loading={this.state.loading}/>
       <Container>
+        {JSON.stringify(this.state.end)}
         <div className="gen-waypoint">
           <Waypoint onLeave={() => this.setState({genFixed: true})} onEnter={() => this.setState({genFixed: false})}/>
         </div>
@@ -140,7 +152,7 @@ class Browser extends Component {
             <hr/>
             <div className="browser">
               {!this.state.loading && !this.state.spinner && this.state.books.length === 0 && 
-              <h6 className="text-center mx-auto py-4">Sorry, we dont have that books</h6>}
+              <h6 className="text-center mx-auto py-4">Sorry, we don't have that books</h6>}
               {books}
             </div>
           </Col>
